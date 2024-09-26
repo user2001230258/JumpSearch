@@ -1,5 +1,3 @@
-A001,Ao thun,100
-B002,Quan jean,75
-C003,Giay Nike,50
-D004,Tui xach,30
-E005,Mu luoi trai,60
+T001 Tao 60
+C002 Chanh 70
+X003 Xoai 80
