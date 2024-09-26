@@ -2,6 +2,7 @@
 #include <string.h>
 #include <math.h>
 
+// Định nghĩa cấu trúc LienLac
 struct LienLac {
     char ten[50];
     char sdt[20];
@@ -9,32 +10,37 @@ struct LienLac {
 
 typedef struct LienLac LL;
 
-int min(int a, int b) {
-    return (a < b) ? a : b;
-}
-
+// Hàm tìm kiếm theo phương pháp Jump Search
 int jumpSearch(LL danhsach[], int n, char k[]) {
     int step = sqrt(n);
     int prev = 0;
+    int jump = step;
 
-    while (strcmp(danhsach[min(prev + step, n) - 1].ten, k) <= 0) {
-        if (strcmp(danhsach[min(prev + step, n) - 1].ten, k) == 0) {
-            return min(prev + step, n) - 1;
+    // Vòng lặp chính, tìm vùng chứa phần tử cần tìm
+    while (strcmp(danhsach[jump - 1].ten, k) < 0) {
+        prev = jump;
+        jump += step;
+
+        // Nếu vượt quá kích thước mảng, đặt jump bằng n
+        if (jump > n) {
+            jump = n;
         }
-        prev = min(prev + step, n);
+
+        // Nếu prev vượt quá kích thước mảng, không tìm thấy
         if (prev >= n) {
             return -1;
         }
     }
 
-    while (prev < n && strcmp(danhsach[prev].ten, k) <= 0) {
+    // Tìm tuyến tính trong vùng được xác định
+    while (prev < jump && strcmp(danhsach[prev].ten, k) <= 0) {
         if (strcmp(danhsach[prev].ten, k) == 0) {
             return prev;
         }
         prev++;
     }
 
-    return -1;
+    return -1;  // Không tìm thấy
 }
 
 int main() {
@@ -42,12 +48,14 @@ int main() {
     LL Ds[50];
     int solienlac = 0;
 
+    // Mở tệp danh bạ
     file = fopen("DanhBa.txt", "r");
     if (file == NULL) {
         printf("Khong the mo tep DanhBa.txt\n");
         return 1;
     }
 
+    // Đọc dữ liệu từ tệp và lưu vào mảng
     while (fscanf(file, "%49s %19s", Ds[solienlac].ten, Ds[solienlac].sdt) == 2) {
         solienlac++;
         if (solienlac >= 50) { 
@@ -57,7 +65,7 @@ int main() {
     }
     fclose(file);
 
-    // Sap xep BUBBLE SORT
+    // Sắp xếp danh sách bằng Bubble Sort
     for (int i = 0; i < solienlac - 1; i++) {
         for (int j = i + 1; j < solienlac; j++) {
             if (strcmp(Ds[i].ten, Ds[j].ten) > 0) {
@@ -68,13 +76,16 @@ int main() {
         }
     }
 
+    // Nhập tên liên lạc cần tìm
     char k[50];
     printf("Nhap ten lien lac can tim: ");
     fgets(k, sizeof(k), stdin);
-    k[strcspn(k, "\n")] = '\0';
+    k[strcspn(k, "\n")] = '\0';  // Xóa ký tự newline
 
+    // Gọi hàm tìm kiếm Jump Search
     int vitri = jumpSearch(Ds, solienlac, k);
 
+    // Hiển thị kết quả tìm kiếm
     if (vitri != -1) {
         printf("Lien lac '%s' co so dien thoai: %s\n", Ds[vitri].ten, Ds[vitri].sdt);
     } else {
